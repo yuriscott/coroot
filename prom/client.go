@@ -49,19 +49,21 @@ func init() {
 }
 
 type ClientConfig struct {
-	Url           string
-	BasicAuth     *utils.BasicAuth
-	TlsSkipVerify bool
-	ExtraSelector string
-	CustomHeaders []utils.Header
-	Step          timeseries.Duration
-	Transport     *http.Transport
+	Url               string
+	BasicAuth         *utils.BasicAuth
+	TlsSkipVerify     bool
+	ExtraSelector     string
+	CustomHeaders     []utils.Header
+	Step              timeseries.Duration
+	Transport         *http.Transport
+	IsVictoriaMetrics bool
 }
 
-func NewClientConfig(url string, step timeseries.Duration) ClientConfig {
+func NewClientConfig(url string, step timeseries.Duration, isVictoriaMetrics bool) ClientConfig {
 	return ClientConfig{
-		Url:  url,
-		Step: step,
+		Url:               url,
+		Step:              step,
+		IsVictoriaMetrics: isVictoriaMetrics,
 	}
 }
 
@@ -115,6 +117,9 @@ func (c *Client) QueryRange(ctx context.Context, query string, from, to timeseri
 	to = to.Truncate(step)
 
 	u := c.url
+	if c.config.IsVictoriaMetrics {
+		u.Path = path.Join(u.Path, "/select/0/prometheus")
+	}
 	u.Path = path.Join(u.Path, "/api/v1/query_range")
 	q := u.Query()
 

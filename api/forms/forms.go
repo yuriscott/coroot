@@ -266,7 +266,7 @@ func (f *IntegrationFormPrometheus) Update(ctx context.Context, project *db.Proj
 }
 
 func (f *IntegrationFormPrometheus) Test(ctx context.Context, project *db.Project) error {
-	config := prom.NewClientConfig(f.Url, f.RefreshInterval)
+	config := prom.NewClientConfig(f.Url, f.RefreshInterval, false)
 	config.BasicAuth = f.BasicAuth
 	config.TlsSkipVerify = f.TlsSkipVerify
 	config.ExtraSelector = f.ExtraSelector

@@ -635,7 +635,7 @@ func (api *Api) Prom(w http.ResponseWriter, r *http.Request, u *db.User) {
 		return
 	}
 	p := project.Prometheus
-	cfg := prom.NewClientConfig(p.Url, p.RefreshInterval)
+	cfg := prom.NewClientConfig(p.Url, p.RefreshInterval, false)
 	cfg.BasicAuth = p.BasicAuth
 	cfg.TlsSkipVerify = p.TlsSkipVerify
 	cfg.ExtraSelector = p.ExtraSelector

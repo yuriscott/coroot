@@ -44,7 +44,7 @@ func main() {
 	pgConnString := kingpin.Flag("pg-connection-string", "Postgres connection string (sqlite is used if not set)").Envar("PG_CONNECTION_STRING").String()
 	disableStats := kingpin.Flag("disable-usage-statistics", "Disable usage statistics").Envar("DISABLE_USAGE_STATISTICS").Bool()
 	bootstrapPrometheusUrl := kingpin.Flag("bootstrap-prometheus-url", "If set, Coroot will create a project for this Prometheus URL").Envar("BOOTSTRAP_PROMETHEUS_URL").String()
-	bootstrapRefreshInterval := kingpin.Flag("bootstrap-refresh-interval", "Refresh interval for the project created upon bootstrap").Envar("BOOTSTRAP_REFRESH_INTERVAL").Duration()
+	bootstrapRefreshInterval := kingpin.Flag("bootstrap-refresh-interval", "Refresh interval for the project created upon bootstrap").Envar("BOOTSTRAP_REFRESH_INTERVAL").Default("10s").Duration()
 	bootstrapPrometheusExtraSelector := kingpin.Flag("bootstrap-prometheus-extra-selector", "Prometheus extra selector for the project created upon bootstrap").Envar("BOOTSTRAP_PROMETHEUS_EXTRA_SELECTOR").String()
 	doNotCheckSLO := kingpin.Flag("do-not-check-slo", "Don't check SLO compliance").Envar("DO_NOT_CHECK_SLO").Bool()
 	doNotCheckForDeployments := kingpin.Flag("do-not-check-for-deployments", "Don't check for new deployments").Envar("DO_NOT_CHECK_FOR_DEPLOYMENTS").Bool()
@@ -61,9 +61,10 @@ func main() {
 	globalClickhouseTlsEnabled := kingpin.Flag("global-clickhouse-tls-enabled", "").Envar("GLOBAL_CLICKHOUSE_TLS_ENABLED").Default("false").Bool()
 	globalClickhouseTlsSkipVerify := kingpin.Flag("global-clickhouse-tls-skip-verify", "").Envar("GLOBAL_CLICKHOUSE_TLS_SKIP_VERIFY").Default("false").Bool()
 
+	globalIsVictoriaMetrics := kingpin.Flag("global-is-victoria-metrics-cluster", "Flag for victoria-metrics-cluster").Envar("FLAG_VICTORIAMETRICS_CLUSTER").Default("false").Bool()
 	globalPrometheusUrl := kingpin.Flag("global-prometheus-url", "").Envar("GLOBAL_PROMETHEUS_URL").String()
 	globalPrometheusTlsSkipVerify := kingpin.Flag("global-prometheus-tls-skip-verify", "").Envar("GLOBAL_PROMETHEUS_TLS_SKIP_VERIFY").Bool()
-	globalRefreshInterval := kingpin.Flag("global-refresh-interval", "").Envar("GLOBAL_REFRESH_INTERVAL").Duration()
+	globalRefreshInterval := kingpin.Flag("global-refresh-interval", "").Envar("GLOBAL_REFRESH_INTERVAL").Default("10s").Duration()
 	globalPrometheusUser := kingpin.Flag("global-prometheus-user", "").Envar("GLOBAL_PROMETHEUS_USER").String()
 	globalPrometheusPassword := kingpin.Flag("global-prometheus-password", "").Envar("GLOBAL_PROMETHEUS_PASSWORD").String()
 	globalPrometheusCustomHeaders := kingpin.Flag("global-prometheus-custom-headers", "").Envar("GLOBAL_PROMETHEUS_CUSTOM_HEADER").StringMap()
@@ -96,13 +97,15 @@ func main() {
 		for k, v := range *globalPrometheusCustomHeaders {
 			customHeaders = append(customHeaders, utils.Header{Key: k, Value: v})
 		}
+
 		globalPrometheus = &db.IntegrationsPrometheus{
-			Global:          true,
-			Url:             *globalPrometheusUrl,
-			RefreshInterval: timeseries.Duration((*globalRefreshInterval).Seconds()),
-			TlsSkipVerify:   *globalPrometheusTlsSkipVerify,
-			BasicAuth:       basicAuth,
-			CustomHeaders:   customHeaders,
+			Global:            true,
+			Url:               *globalPrometheusUrl,
+			RefreshInterval:   timeseries.Duration((*globalRefreshInterval).Seconds()),
+			TlsSkipVerify:     *globalPrometheusTlsSkipVerify,
+			BasicAuth:         basicAuth,
+			CustomHeaders:     customHeaders,
+			IsVictoriaMetrics: *globalIsVictoriaMetrics,
 		}
 	}
 
@@ -151,7 +154,7 @@ func main() {
 	}
 
 	if globalPrometheus == nil {
-		if err = database.BootstrapPrometheusIntegration(defaultProject, *bootstrapPrometheusUrl, *bootstrapRefreshInterval, *bootstrapPrometheusExtraSelector); err != nil {
+		if err = database.BootstrapPrometheusIntegration(defaultProject, *bootstrapPrometheusUrl, *bootstrapRefreshInterval, *bootstrapPrometheusExtraSelector, *globalIsVictoriaMetrics); err != nil {
 			klog.Exitln(err)
 		}
 	}

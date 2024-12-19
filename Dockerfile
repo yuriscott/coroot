@@ -1,4 +1,8 @@
 FROM golang:1.23-bullseye AS backend-builder
+ARG TARGETOS
+ARG TARGETARCH
+ENV GOPROXY="https://goproxy.cn"
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 RUN apt update && apt install -y liblz4-dev
 WORKDIR /tmp/src
 COPY go.mod .
@@ -6,7 +10,7 @@ COPY go.sum .
 RUN go mod download
 COPY . .
 ARG VERSION=unknown
-RUN go build -mod=readonly -ldflags "-X main.version=$VERSION" -o coroot .
+RUN  go build -mod=readonly -ldflags "-X main.version=$VERSION" -o coroot .
 
 
 FROM debian:bullseye

@@ -22,11 +22,10 @@ require (
 	github.com/klauspost/compress v1.17.10
 	github.com/lib/pq v1.10.7
 	github.com/matoous/go-nanoid v1.5.0
-	github.com/mattn/go-sqlite3 v1.14.15
+	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.14
 	github.com/prometheus/client_golang v1.20.5
 	github.com/prometheus/common v0.60.1
-	github.com/prometheus/procfs v0.15.1
 	github.com/prometheus/prometheus v0.300.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/slack-go/slack v0.11.3
@@ -73,6 +72,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
+	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	go.opentelemetry.io/otel v1.31.0 // indirect

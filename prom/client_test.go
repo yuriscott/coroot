@@ -33,7 +33,7 @@ func TestQueryRange(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(h))
 	defer ts.Close()
 
-	cfg := NewClientConfig(ts.URL, step)
+	cfg := NewClientConfig(ts.URL, step, false)
 	cfg.TlsSkipVerify = true
 	client, err := NewClient(cfg)
 	require.NoError(t, err)

@@ -96,14 +96,15 @@ func (integrations Integrations) GetInfo() []IntegrationInfo {
 }
 
 type IntegrationsPrometheus struct {
-	Global          bool                `json:"global"`
-	Url             string              `json:"url"`
-	RefreshInterval timeseries.Duration `json:"refresh_interval"`
-	TlsSkipVerify   bool                `json:"tls_skip_verify"`
-	BasicAuth       *utils.BasicAuth    `json:"basic_auth"`
-	ExtraSelector   string              `json:"extra_selector"`
-	CustomHeaders   []utils.Header      `json:"custom_headers"`
-	ExtraLabels     map[string]string   `json:"-"`
+	Global            bool                `json:"global"`
+	Url               string              `json:"url"`
+	RefreshInterval   timeseries.Duration `json:"refresh_interval"`
+	TlsSkipVerify     bool                `json:"tls_skip_verify"`
+	BasicAuth         *utils.BasicAuth    `json:"basic_auth"`
+	ExtraSelector     string              `json:"extra_selector"`
+	CustomHeaders     []utils.Header      `json:"custom_headers"`
+	ExtraLabels       map[string]string   `json:"-"`
+	IsVictoriaMetrics bool                `json:"is_vectoria_metrics"`
 }
 
 type IntegrationClickhouse struct {

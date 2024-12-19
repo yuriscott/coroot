@@ -26,7 +26,7 @@ func DefaultPrometheusClientFactory(p *db.Project, globalPrometheus *db.Integrat
 		return nil, fmt.Errorf("prometheus is not configured")
 	}
 
-	c := prom.NewClientConfig(cfg.Url, cfg.RefreshInterval)
+	c := prom.NewClientConfig(cfg.Url, cfg.RefreshInterval, globalPrometheus.IsVictoriaMetrics)
 	c.BasicAuth = cfg.BasicAuth
 	c.TlsSkipVerify = cfg.TlsSkipVerify
 	c.ExtraSelector = cfg.ExtraSelector

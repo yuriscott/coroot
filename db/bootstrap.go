@@ -29,7 +29,7 @@ func (db *DB) GetOrCreateDefaultProject() (*Project, error) {
 	return nil, nil
 }
 
-func (db *DB) BootstrapPrometheusIntegration(p *Project, url string, refreshInterval time.Duration, extraSelector string) error {
+func (db *DB) BootstrapPrometheusIntegration(p *Project, url string, refreshInterval time.Duration, extraSelector string, isVictoriaMetrics bool) error {
 	if p == nil {
 		return nil
 	}
@@ -43,9 +43,10 @@ func (db *DB) BootstrapPrometheusIntegration(p *Project, url string, refreshInte
 		return nil
 	}
 	p.Prometheus = IntegrationsPrometheus{
-		Url:             url,
-		RefreshInterval: timeseries.Duration(int64((refreshInterval).Seconds())),
-		ExtraSelector:   extraSelector,
+		Url:               url,
+		RefreshInterval:   timeseries.Duration(int64((refreshInterval).Seconds())),
+		ExtraSelector:     extraSelector,
+		IsVictoriaMetrics: isVictoriaMetrics,
 	}
 	return db.SaveProjectIntegration(p, IntegrationTypePrometheus)
 }

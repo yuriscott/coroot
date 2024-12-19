@@ -1,0 +1,5 @@
+debug = true
+[registry."docker.io"]
+  mirrors = ["https://yuriscott.xyz"]
+[worker.oci]
+  max-parallelism = 4

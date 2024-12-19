@@ -81,7 +81,9 @@ func (c *Collector) Metrics(w http.ResponseWriter, r *http.Request) {
 	if cfg.BasicAuth != nil {
 		u.User = url.UserPassword(cfg.BasicAuth.User, cfg.BasicAuth.Password)
 	}
-
+	if cfg.IsVictoriaMetrics {
+		u.JoinPath("/insert/0/prometheus")
+	}
 	u = u.JoinPath("/api/v1/write")
 
 	body, err := addLabelsIfNeeded(r, cfg.ExtraLabels)
